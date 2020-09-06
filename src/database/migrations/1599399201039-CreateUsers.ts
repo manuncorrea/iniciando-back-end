@@ -1,31 +1,35 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class CreateAppointments1599335991385 implements MigrationInterface {
+export default class CreateUsers1599399201039 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        //Criar tabela no BD
         await queryRunner.createTable(
             new Table({
-                name: 'appointments',
+                name: 'users',
+
                 columns: [
                     {
                         name: 'id',
                         type: 'varchar',
-                        isPrimary: true,
                         generationStrategy: 'uuid',
-                        default: 'uuid_generate_v4()'
-                    }, 
-                    {
-                        name: 'provider',
-                        type: 'varchar',
-                    },
-                    {
-                        name: 'date',
-                        type: 'timestamp with time zone',
+                        default: 'uuid_generate_v4()',
                     },
 
-                     //Data de criação
-                     {
+                    {
+                        name: 'name',
+                        type:'varchar',
+                    },
+                    {
+                        name: 'email',
+                        type: 'varchar',
+                        isUnique: true,
+                    },
+                    {
+                        name: 'password',
+                        type: 'varchar',
+                    },
+                    //Data de criação
+                    {
                         name: 'created_at',
                         type: 'timestamp',
                         default: 'now()',
@@ -39,13 +43,10 @@ export class CreateAppointments1599335991385 implements MigrationInterface {
                 ],
             }),
         );
-            
-            
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // Desfazer o que foi criando no metodo up
-        await queryRunner.dropTable('appointments');
+        await queryRunner.dropTable('users');
     }
 
 }
