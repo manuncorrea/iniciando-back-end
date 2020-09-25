@@ -4,20 +4,35 @@ import AuthenticateUserService from '../services/AuthenticateUserService';
 
 const sessionRouter = Router();
 
-sessionRouter.post('/', async(request, response) => {
+interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  password?: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+sessionRouter.post('/', async (request, response) => {
+  try{
+
     const { email, password } = request.body;
 
     const authenticateUser = new AuthenticateUserService();
-
+    
     const { user, token } = await authenticateUser.execute({
         email, 
         password,
     });
 
-    delete user.password      // Não retornar a senha para o usuario
+    const updatedUser: IUser = { ...user }
+    
+    delete updatedUser.password;
 
-    return response.json({ user , token})
-
+    return response.json( { updatedUser, token });
+  } catch (err) {
+    return response.status(400).json({ error: err.message});
+  }
 });
 
 export default sessionRouter;
