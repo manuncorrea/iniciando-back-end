@@ -29,7 +29,7 @@ sessionRouter.post('/', async (request, response) => {
     
     delete updatedUser.password;
 
-    return response.json( { updatedUser, token });
+    return response.json({ user: updatedUser, token });
   } catch (err) {
     return response.status(400).json({ error: err.message});
   }
