@@ -1,38 +1,30 @@
 import { Router } from 'express';
+import { container } from 'tsyringe';
 
 import AuthenticateUserService from '@modules/users/services/AuthenticateUserService';
 
-const sessionRouter = Router();
+import UserMap from '../../../../../mappers/UserMap';
 
-interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  password?: string;
-  created_at: Date;
-  updated_at: Date;
-}
+const sessionsRouter = Router();
 
-sessionRouter.post('/', async (request, response) => {
-  try{
+sessionsRouter.post('/', async (request, response) => {
+  const { email, password } = request.body;
 
-    const { email, password } = request.body;
+  const authenticateUser = container.resolve(AuthenticateUserService);
 
-    const authenticateUser = new AuthenticateUserService();
-    
-    const { user, token } = await authenticateUser.execute({
-        email, 
-        password,
-    });
+  const { user, token } = await authenticateUser.execute({
+    email, 
+    password,
+  });
 
-    const updatedUser: IUser = { ...user }
-    
-    delete updatedUser.password;
+  /* exemplo */
+  const mappedUser = UserMap.toDTO(user);
 
-    return response.json({ user: updatedUser, token });
-  } catch (err) {
-    return response.status(400).json({ error: err.message});
-  }
+  return response.json(mappedUser);
+
+  /*delete user.password;
+
+  return response.json({ user, token });*/
 });
 
-export default sessionRouter;
+export default sessionsRouter;
