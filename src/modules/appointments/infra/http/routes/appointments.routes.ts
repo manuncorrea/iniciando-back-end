@@ -22,7 +22,6 @@ appointmentsRouter.post('/', async (request, response) => {
 
     const parsedDate = parseISO(date);
 
-    
     const createAppointment = container.resolve(CreateAppointmentService);
 
     const appointment = await createAppointment.execute({ 
